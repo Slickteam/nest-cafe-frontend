@@ -4,37 +4,31 @@ import App from '@/App.vue';
 import router from '@/router';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
-import { keycloak, keycloakInitOptions } from '@/utils/keycloak.js';
+import {
+  initKeycloak,
+  keycloak,
+  KEYCLOAK_USER_ATTRIBUE,
+} from '@/utils/keycloak.js';
+import { useUserStore } from '@/stores/user';
 
-console.log('Launch app vue');
-
-keycloak
-  .init({
-    onLoad: keycloakInitOptions.onLoad,
-    redirectUri: keycloakInitOptions.redirectUri,
-    checkLoginIframe: false,
-  })
+initKeycloak()
   .then(() => {
     createApp(App)
       .use(router)
       .use(createPinia().use(piniaPluginPersistedstate))
       .mount('#app');
-    // Token Refresh
-    setInterval(() => {
-      keycloak
-        .updateToken(70)
-        .then((refreshed) => {
-          if (refreshed) {
-            console.log('Token refreshed' + refreshed);
-          } else {
-            console.warn('Token not refreshed');
-          }
-        })
-        .catch(() => {
-          console.error('Failed to refresh token');
-        });
-    }, 6000);
   })
-  .catch((error) => {
-    console.log(error);
+  .then(() => {
+    const userStore = useUserStore();
+    if (keycloak.authenticated && userStore.getToken === '') {
+      userStore.setToken(keycloak.token);
+    }
+    userStore.setUserInfo({
+      email: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.email],
+      preferred_username:
+        keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.preferred_username],
+      name: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.name],
+      given_name: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.given_name],
+      family_name: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.family_name],
+    });
   });

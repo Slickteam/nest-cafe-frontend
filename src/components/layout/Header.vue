@@ -16,9 +16,7 @@
           </template>
           <template v-else>
             Bienvenue,
-            <template
-              v-if="$keycloak && $keycloak.ready && $keycloak.authenticated"
-            >
+            <template v-if="authenticated">
               {{ getUserFamilyName }} {{ getUserGivenName }}
             </template>
           </template>
@@ -34,11 +32,9 @@
               <div
                 class="h-8 w-8 rounded-full flex justify-center items-center"
               >
-                <span
-                  v-if="$keycloak && $keycloak.ready && $keycloak.authenticated"
-                  class="text-white font-bold"
-                  >{{ getUserInitials() }}</span
-                >
+                <span v-if="authenticated" class="text-white font-bold">
+                  {{ getUserInitials() }}
+                </span>
               </div>
             </MenuButton>
           </div>
@@ -54,22 +50,10 @@
               class="account-menu origin-top-right absolute right-0 py-1 px-4 mt-2 w-max rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
             >
               <div class="pb-2 mt-2 flex">
-                <span
-                  v-if="$keycloak && $keycloak.ready && $keycloak.authenticated"
-                >
+                <span v-if="authenticated">
                   {{ getUserFamilyName }} {{ getUserGivenName }}
                 </span>
               </div>
-              <MenuItem>
-                <a
-                  :href="accountUrl"
-                  title="Modifier le profil (Nouvelle fenêtre)"
-                  target="_blank"
-                  class="account-menu__item mb-2 text-gray-700"
-                >
-                  Modifier le profil
-                </a>
-              </MenuItem>
               <MenuItem>
                 <div class="border-t pt-1 border-t-gray-300">
                   <button
@@ -97,6 +81,7 @@ import {
 } from '@headlessui/vue';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
+import { keycloak } from '@/utils/keycloak';
 
 export default {
   name: 'LayoutHeader',
@@ -109,14 +94,12 @@ export default {
   setup() {
     const userStore = useUserStore();
     const { userInfo } = storeToRefs(userStore);
-    const accountUrl = `${import.meta.env.VITE_KEYCLOAK_URL}realms/${
-      import.meta.env.VITE_KEYCLOAK_REALM
-    }/account`;
+    const authenticated = userStore.isAuthenticated;
 
     return {
       userStore,
       userInfo,
-      accountUrl,
+      authenticated,
     };
   },
   computed: {
@@ -139,9 +122,8 @@ export default {
       return `${familyName} ${givenName}`;
     },
     logoutUser() {
-      this.$keycloak.logoutFn();
+      keycloak.logout();
       this.userStore.$reset();
-      this.applicationStore.$reset();
     },
   },
 };

@@ -7,6 +7,9 @@ export const useUserStore = defineStore('user', {
     accessToken: ref(''),
   }),
   getters: {
+    isAuthenticated: (state) => {
+      return state.accessToken && state.accessToken !== '';
+    },
     getToken: (state) => {
       return state.accessToken;
     },

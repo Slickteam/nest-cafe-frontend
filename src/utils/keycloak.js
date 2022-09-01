@@ -12,4 +12,41 @@ const keycloakInitOptions = {
 
 const keycloak = Keycloak(keycloakInitOptions);
 
-export { keycloak, keycloakInitOptions };
+const KEYCLOAK_USER_ATTRIBUE = {
+  email: 'email',
+  preferred_username: 'preferred_username',
+  name: 'name',
+  given_name: 'given_name',
+  family_name: 'family_name',
+};
+
+function initKeycloak() {
+  return keycloak
+    .init({
+      onLoad: keycloakInitOptions.onLoad,
+      redirectUri: keycloakInitOptions.redirectUri,
+      checkLoginIframe: false,
+    })
+    .then(() => {
+      // Token Refresh
+      setInterval(() => {
+        keycloak
+          .updateToken(70)
+          .then((refreshed) => {
+            if (refreshed) {
+              console.log('Token refreshed' + refreshed);
+            } else {
+              console.warn('Token not refreshed');
+            }
+          })
+          .catch(() => {
+            console.error('Failed to refresh token');
+          });
+      }, 6000);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export { initKeycloak, keycloak, KEYCLOAK_USER_ATTRIBUE };

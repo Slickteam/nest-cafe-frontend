@@ -1,0 +1,96 @@
+stages:
+  - 📡 install
+  - 📋 lint
+  - 🖌 format
+  - 🤞 test
+  - 📦 build
+
+variables:
+  NODE_IMAGE: node:18.8.0-alpine
+  NPM_GLOBAL_CACHE: /cache/.npm_global_cache
+  FF_USE_FASTZIP: 'true'
+  ARTIFACT_COMPRESSION_LEVEL: 'fast'
+  CACHE_COMPRESSION_LEVEL: 'fast'
+  ALPINE_SSH_IMAGE: ronronan/alpine-ssh-client:3.15.0
+  GIT_DEPTH: 1
+
+.node_modules_cache_var:
+  - &node_modules_cache
+    key:
+      files:
+        - package-lock.json
+      prefix: 'node-modules-$CI_PROJECT_ID'
+    paths:
+      - node_modules
+    policy: pull
+
+.build_cache_var:
+  - &build_cache
+    key: 'build-$CI_PROJECT_ID-$CI_PIPELINE_ID'
+    paths:
+      - dist
+    policy: pull
+
+install:
+  image: $NODE_IMAGE
+  stage: 📡 install
+  cache:
+    - <<: *node_modules_cache
+      policy: push
+  script:
+    - npm ci --cache $NPM_GLOBAL_CACHE --prefer-offline
+  except:
+    - tags
+
+eslint:
+  image: $NODE_IMAGE
+  stage: 📋 lint
+  cache:
+    - *node_modules_cache
+  script:
+    - npm run lint
+  except:
+    - tags
+
+stylelint:
+  image: $NODE_IMAGE
+  stage: 📋 lint
+  cache:
+    - *node_modules_cache
+  script:
+    - npm run lint:css
+  except:
+    - tags
+
+prettier:
+  image: $NODE_IMAGE
+  stage: 🖌 format
+  cache:
+    - *node_modules_cache
+  script:
+    - npm run prettier
+  except:
+    - tags
+
+audit-dependency:
+  image: $NODE_IMAGE
+  stage: 🤞 test
+  allow_failure: true
+  cache:
+    - *node_modules_cache
+  script:
+    - npm audit
+  except:
+    - tags
+
+build:
+  image: $NODE_IMAGE
+  stage: 📦 build
+  cache:
+    - *node_modules_cache
+    - <<: *build_cache
+      policy: push
+  script:
+    - npm run build
+  except:
+    - tags

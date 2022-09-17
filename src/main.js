@@ -22,13 +22,13 @@ initKeycloak()
     const userStore = useUserStore();
     if (keycloak.authenticated && userStore.getToken === '') {
       userStore.setToken(keycloak.token);
+      userStore.setUserInfo({
+        email: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.email],
+        preferred_username:
+          keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.preferred_username],
+        name: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.name],
+        given_name: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.given_name],
+        family_name: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.family_name],
+      });
     }
-    userStore.setUserInfo({
-      email: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.email],
-      preferred_username:
-        keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.preferred_username],
-      name: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.name],
-      given_name: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.given_name],
-      family_name: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.family_name],
-    });
   });

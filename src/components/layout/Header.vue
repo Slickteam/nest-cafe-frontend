@@ -57,10 +57,18 @@
               <MenuItem>
                 <div class="border-t pt-1 border-t-gray-300">
                   <button
+                    v-if="authenticated"
                     class="account-menu__item mt-1 text-blue-800 uppercase"
                     @click="logoutUser"
                   >
                     Se déconnecter
+                  </button>
+                  <button
+                    v-else
+                    class="account-menu__item mt-1 text-blue-800 uppercase"
+                    @click="loginUser"
+                  >
+                    Se connecter
                   </button>
                 </div>
               </MenuItem>
@@ -124,6 +132,9 @@ export default {
     logoutUser() {
       keycloak.logout();
       this.userStore.$reset();
+    },
+    loginUser() {
+      keycloak.login();
     },
   },
 };

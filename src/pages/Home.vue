@@ -26,28 +26,48 @@ export default {
   },
   methods: {
     publicApi() {
-      api.get('/public').then((response) => {
-        // en cas de réussite de la requête
-        console.log(response.data);
-      });
+      api
+        .get('/public')
+        .then((response) => {
+          // en cas de réussite de la requête
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error(error?.message);
+        });
     },
     adminApi() {
-      api.get('/admin').then((response) => {
-        // en cas de réussite de la requête
-        console.log(response.data);
-      });
+      api
+        .get('/admin')
+        .then((response) => {
+          // en cas de réussite de la requête
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error(error?.message);
+        });
     },
     userApi() {
-      api.get('/user').then((response) => {
-        // en cas de réussite de la requête
-        console.log(response.data);
-      });
+      api
+        .get('/user')
+        .then((response) => {
+          // en cas de réussite de la requête
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error(error?.message);
+        });
     },
     commonApi() {
-      api.get('/all').then((response) => {
-        // en cas de réussite de la requête
-        console.log(response.data);
-      });
+      api
+        .get('/all')
+        .then((response) => {
+          // en cas de réussite de la requête
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error(error?.message);
+        });
     },
   },
 };

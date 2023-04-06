@@ -13,7 +13,7 @@ initKeycloak()
   })
   .then(() => {
     const userStore = useUserStore();
-    if (keycloak.authenticated && userStore.getToken === '') {
+    if (keycloak.authenticated) {
       userStore.setToken(keycloak.token);
       userStore.setUserInfo({
         email: keycloak.idTokenParsed[KEYCLOAK_USER_ATTRIBUE.email],

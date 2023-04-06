@@ -44,6 +44,8 @@ function initKeycloak() {
               console.error('Failed to refresh token');
             });
         }, 6000);
+        location.hash = '';
+        history.replaceState(history.state, '', location.pathname);
       }
     })
     .catch((error) => {

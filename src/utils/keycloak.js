@@ -3,14 +3,14 @@ import Keycloak from 'keycloak-js';
 const keycloakInitOptions = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
   realm: import.meta.env.VITE_KEYCLOAK_REALM,
-  clientId: import.meta.env.VITE_KEYCLOAK_CLIENTID,
+  clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
   redirectUri: import.meta.env.VITE_KEYCLOAK_REDIRECT_URL,
   checkLoginIframe: false,
   flow: 'standard',
   onLoad: 'check-sso',
 };
 
-const keycloak = Keycloak(keycloakInitOptions);
+const keycloak = new Keycloak(keycloakInitOptions);
 
 const KEYCLOAK_USER_ATTRIBUE = {
   email: 'email',
@@ -28,21 +28,23 @@ function initKeycloak() {
       checkLoginIframe: false,
     })
     .then(() => {
-      // Token Refresh
-      setInterval(() => {
-        keycloak
-          .updateToken(70)
-          .then((refreshed) => {
-            if (refreshed) {
-              console.log('Token refreshed' + refreshed);
-            } else {
-              console.warn('Token not refreshed');
-            }
-          })
-          .catch(() => {
-            console.error('Failed to refresh token');
-          });
-      }, 6000);
+      if (keycloak.authenticated) {
+        // Token Refresh
+        setInterval(() => {
+          keycloak
+            .updateToken(70)
+            .then((refreshed) => {
+              if (refreshed) {
+                console.debug('Token refreshed' + refreshed);
+              } else {
+                console.warn('Token not refreshed');
+              }
+            })
+            .catch(() => {
+              console.error('Failed to refresh token');
+            });
+        }, 6000);
+      }
     })
     .catch((error) => {
       console.log(error);

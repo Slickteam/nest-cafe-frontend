@@ -2,30 +2,10 @@
   <main class="container mx-auto">
     <h1 class="text-4xl mb-4">Home</h1>
     <div v-if="authenticated">
-      <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        @click="publicApi"
-      >
-        Public API
-      </button>
-      <button
-        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-        @click="adminApi"
-      >
-        Admin API
-      </button>
-      <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-        @click="userApi"
-      >
-        User API
-      </button>
-      <button
-        class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-        @click="commonApi"
-      >
-        Common API
-      </button>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="publicApi">Public API</button>
+      <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" @click="adminApi">Admin API</button>
+      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" @click="userApi">User API</button>
+      <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded" @click="commonApi">Common API</button>
     </div>
   </main>
 </template>

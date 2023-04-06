@@ -2,11 +2,7 @@
   <footer class="footer">
     <div class="footer__content">
       <div>
-        <img
-          class="h-8 w-auto"
-          src="@/assets/images/logo.png"
-          alt="Logo Nestcafe"
-        />
+        <img class="h-8 w-auto" src="@/assets/images/logo.png" alt="Logo Nestcafe" />
       </div>
       <span class="font-bold">&copy; Slickteam 2022</span>
     </div>
